@@ -31,12 +31,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/youtube-downloader-ts.git"
+    "url": "https://github.com/boy-lin/youtube-downloader-ts.git"
   },
   "bugs": {
-    "url": "https://github.com/your-username/youtube-downloader-ts/issues"
+    "url": "https://github.com/boy-lin/youtube-downloader-ts/issues"
   },
-  "homepage": "https://github.com/your-username/youtube-downloader-ts#readme",
+  "homepage": "https://github.com/boy-lin/youtube-downloader-ts#readme",
   "dependencies": {
     "fs-extra": "^11.2.0"
   },
