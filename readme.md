@@ -1,184 +1,209 @@
-# YouTube Download - TypeScript Library
+# YouTube Downloader TS
 
-基于 YoutubeDownloader-master 项目实现的 Node.js/TypeScript 版本的 YouTube 视频下载器。
+A powerful TypeScript library and CLI tool for downloading YouTube videos with advanced stream resolution and flexible download options.
 
-## 🚀 快速开始
+[![npm version](https://badge.fury.io/js/youtube-downloader-ts.svg)](https://badge.fury.io/js/youtube-downloader-ts)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js Version](https://img.shields.io/node/v/youtube-downloader-ts.svg)](https://nodejs.org/)
 
-### 1. 安装依赖
+## ✨ Features
 
-```bash
-cd /Users/haolin/Developer/boy-lin/nblog/lib/youtube-download
-npm install
-```
+- 🎥 **Video & Audio Download**: Download videos in various qualities and formats
+- 🎵 **Audio-Only Mode**: Extract audio tracks in MP3, M4A, WebM, or OGG formats
+- 🔧 **Flexible Quality Options**: Choose from lowest to highest quality settings
+- 📱 **Multiple URL Formats**: Support for standard URLs, short URLs, and escaped URLs
+- 🚀 **CLI Tool**: Easy-to-use command-line interface
+- 📦 **TypeScript Support**: Full type definitions and IntelliSense support
+- 🔄 **Automatic Muxing**: Seamless video and audio stream combination using FFmpeg
 
-### 2. 构建项目
+## 🚀 Quick Start
 
-```bash
-npm run build
-```
-
-### 3. 运行示例
-
-```bash
-# 运行示例代码
-npm run start -- "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-
-# 或者使用 npx
-npx youtube-download "dQw4w9WgXcQ" --quality high
-```
-
-## 📋 项目结构
-
-```
-youtube-download/
-├── src/
-│   ├── types.ts          # 类型定义
-│   ├── resolver.ts       # URL解析和流信息获取
-│   ├── downloader.ts     # 视频下载核心逻辑
-│   ├── index.ts          # 主导出文件
-│   ├── cli.ts            # 命令行接口
-│   ├── example.ts         # 使用示例
-│   └── __tests__/        # 测试文件
-├── package.json          # 项目配置
-├── tsconfig.json         # TypeScript配置
-├── jest.config.js        # 测试配置
-├── .eslintrc.js          # 代码规范配置
-└── README.md             # 项目文档
-```
-
-## 🎯 核心功能
-
-### 1. URL 解析 (`QueryResolver`)
-
-- 支持 YouTube 视频 URL
-- 支持视频 ID
-- 支持搜索查询（以 `?` 开头）
-
-### 2. 流解析 (`StreamResolver`)
-
-- 获取视频流信息
-- 获取音频流信息
-- 智能组合音视频流
-- 支持多种容器格式
-
-### 3. 视频下载 (`VideoDownloader`)
-
-- 支持进度回调
-- 自动错误处理
-- 文件大小格式化
-- 下载速度计算
-
-### 4. 命令行工具 (`CLI`)
-
-- 丰富的命令行选项
-- 彩色输出和进度显示
-- 格式列表和信息显示
-
-## 💻 使用方法
-
-### 命令行使用
+### Installation
 
 ```bash
-# 基本下载
-youtube-download "https://www.youtube.com/watch?v=VIDEO_ID"
+# Install globally for CLI usage
+npm install -g youtube-downloader-ts
 
-# 指定质量和格式
-youtube-download "VIDEO_ID" --quality high --container mp4
-
-# 仅下载音频
-youtube-download "VIDEO_ID" --audio-only --container mp3
-
-# 列出可用格式
-youtube-download "VIDEO_ID" --list-formats
-
-# 显示视频信息
-youtube-download "VIDEO_ID" --info
+# Or install as a dependency
+npm install youtube-downloader-ts
 ```
 
-### 编程使用
+### CLI Usage
+
+```bash
+# Download a video (highest quality, MP4 format)
+yt-dl-ts "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+
+# Download audio only (MP3 format)
+yt-dl-ts "dQw4w9WgXcQ" --audio-only --container mp3
+
+# Specify quality and output file
+yt-dl-ts "dQw4w9WgXcQ" --quality medium --output my_video.mp4
+
+# Download in WebM format
+yt-dl-ts "dQw4w9WgXcQ" --container webm
+
+# Show help
+yt-dl-ts --help
+```
+
+### Programmatic Usage
 
 ```typescript
-import YouTubeDownloader, { VideoQuality, Container } from './index'
+import { downloadByUrlOrId } from 'youtube-downloader-ts'
 
-const downloader = new YouTubeDownloader()
-
-// 解析视频信息
-const videos = await downloader.resolveQuery(
-  'https://www.youtube.com/watch?v=VIDEO_ID'
+// Download video
+const outputPath = await downloadByUrlOrId(
+  'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+  'video.mp4',
+  {
+    container: 'mp4',
+    audioOnly: false,
+    quality: 'highest'
+  }
 )
 
-// 获取下载选项
-const options = await downloader.getDownloadOptions(videos[0].id, {
-  videoQuality: VideoQuality.High,
-  container: Container.MP4
-})
-
-// 下载视频
-await downloader.downloadVideo(options[0], './video.mp4', progress => {
-  console.log(`进度: ${progress.percentage.toFixed(1)}%`)
-})
+console.log(`Downloaded to: ${outputPath}`)
 ```
 
-## 🔧 开发命令
+## 📋 CLI Options
+
+| Option         | Description         | Values                                       | Default        |
+| -------------- | ------------------- | -------------------------------------------- | -------------- |
+| `--audio-only` | Download audio only | -                                            | `false`        |
+| `--container`  | Container format    | `mp4`, `webm`, `mp3`, `ogg`                  | `mp4`          |
+| `--quality`    | Video quality       | `lowest`, `low`, `medium`, `high`, `highest` | `highest`      |
+| `--output`     | Output file path    | `<path>`                                     | Auto-generated |
+| `--help`, `-h` | Show help message   | -                                            | -              |
+
+## 🎯 Supported URL Formats
+
+- **Standard YouTube URLs**: `https://www.youtube.com/watch?v=VIDEO_ID`
+- **Escaped URLs**: `https://www.youtube.com/watch\?v\=VIDEO_ID`
+- **Short URLs**: `https://youtu.be/VIDEO_ID`
+- **Video IDs**: `VIDEO_ID`
+
+## 📦 API Reference
+
+### `downloadByUrlOrId(input, output?, preferences?)`
+
+Downloads a YouTube video or audio.
+
+**Parameters:**
+
+- `input` (string): YouTube URL or video ID
+- `output` (string, optional): Output file path
+- `preferences` (DownloadPref, optional): Download preferences
+
+**Returns:** Promise<string> - Path to downloaded file
+
+**DownloadPref Interface:**
+
+```typescript
+interface DownloadPref {
+  container?: 'mp4' | 'webm' | 'mp3' | 'ogg'
+  audioOnly?: boolean
+  quality?: 'lowest' | 'low' | 'medium' | 'high' | 'highest'
+}
+```
+
+## 🛠️ Development
+
+### Prerequisites
+
+- Node.js >= 16.0.0
+- FFmpeg (for video/audio muxing)
+
+### Setup
 
 ```bash
-# 开发模式（监听文件变化）
-npm run dev
+# Clone the repository
+git clone <repository-url>
+cd youtube-downloader-ts
 
-# 构建项目
+# Install dependencies
+npm install
+
+# Build the project
 npm run build
 
-# 运行测试
-npm test
-
-# 代码检查
-npm run lint
-
-# 清理构建文件
-npm run clean
+# Link for local development
+npm link
 ```
 
-## 📦 依赖说明
+### Available Scripts
 
-### 核心依赖
+```bash
+npm run build    # Build TypeScript to JavaScript
+npm run dev      # Build in watch mode
+npm run test     # Run tests
+npm run lint     # Run ESLint
+npm run clean    # Clean build files
+```
 
-- `ytdl-core`: YouTube 视频信息获取和流解析
-- `commander`: 命令行参数解析
-- `chalk`: 终端颜色输出
-- `ora`: 加载动画
-- `fs-extra`: 文件系统操作
+## 🏗️ Project Structure
 
-### 开发依赖
+```
+src/
+├── index.ts              # CLI entry point
+├── downloader.ts          # Core download logic
+├── types/
+│   └── global.d.ts       # Global type definitions
+└── utils/
+    └── ffmpeg.ts         # FFmpeg integration
+```
 
-- `typescript`: TypeScript 编译器
-- `jest`: 测试框架
-- `eslint`: 代码检查
-- `@types/*`: TypeScript 类型定义
+## 🔧 Requirements
 
-## 🎨 设计特点
+- **Node.js**: >= 16.0.0
+- **FFmpeg**: Required for video/audio muxing
+  - Install FFmpeg and ensure it's available in your PATH
+  - Download from [FFmpeg.org](https://ffmpeg.org/download.html)
 
-1. **模块化设计**: 每个功能模块独立，易于维护和扩展
-2. **类型安全**: 完整的 TypeScript 类型定义
-3. **错误处理**: 完善的错误处理和恢复机制
-4. **进度跟踪**: 实时下载进度和速度显示
-5. **灵活配置**: 支持多种质量和格式选项
+## 📝 Examples
 
-## 🚧 注意事项
+### Download High-Quality Video
 
-1. **FFmpeg 集成**: 当前版本简化了音视频合并，实际生产环境需要 FFmpeg
-2. **搜索功能**: 搜索功能需要额外的实现（ytdl-core 不支持搜索）
-3. **字幕支持**: 字幕下载功能需要额外实现
-4. **元数据注入**: 媒体标签注入需要额外的库支持
+```bash
+yt-dl-ts "https://www.youtube.com/watch?v=dQw4w9WgXcQ" --quality high --output rickroll.mp4
+```
 
-## 🔄 与原始项目的对比
+### Extract Audio Only
 
-| 功能 | YoutubeDownloader-master | youtube-download   |
-| ---- | ------------------------ | ------------------ |
-| 平台 | .NET/Avalonia            | Node.js/TypeScript |
-| UI   | 图形界面                 | 命令行界面         |
-| 语言 | C#                       | TypeScript         |
-| 架构 | MVVM                     | 模块化             |
-| 依赖 | YoutubeExplode           | ytdl-core          |
-| 输出 | 桌面应用                 | 库/CLI 工具        |
+```bash
+yt-dl-ts "dQw4w9WgXcQ" --audio-only --container mp3 --output song.mp3
+```
 
-这个 TypeScript 版本保持了原始项目的核心功能，同时提供了更适合 Node.js 生态系统的 API 设计。
+### Download with Custom Quality
+
+```bash
+yt-dl-ts "youtu.be/dQw4w9WgXcQ" --quality medium --container webm
+```
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## ⚠️ Disclaimer
+
+This tool is for educational purposes only. Please respect YouTube's Terms of Service and copyright laws. Users are responsible for ensuring they have the right to download content.
+
+## 🙏 Acknowledgments
+
+- Inspired by various YouTube downloader projects
+- Built with TypeScript and Node.js
+- Uses FFmpeg for video processing
+
+---
+
+**Made with ❤️ for the developer community**
