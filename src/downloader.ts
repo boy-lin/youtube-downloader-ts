@@ -245,7 +245,7 @@ async function fetchPlayerResponse(videoId: string): Promise<PlayerResponse> {
     const pr = JSON.parse(buf.toString('utf8'))
     if (pr && pr.videoDetails) return pr
   } catch (e) {
-    console.log('IOS client failed, trying fallback:', e)
+    console.warn('IOS client failed, trying fallback:', e)
   }
 
   // Fallback: TVHTML5_SIMPLY_EMBEDDED_PLAYER (requires signature)
@@ -274,7 +274,7 @@ async function fetchPlayerResponse(videoId: string): Promise<PlayerResponse> {
     const pr = JSON.parse(buf.toString('utf8'))
     if (pr && pr.videoDetails) return pr
   } catch (e) {
-    console.log('TVHTML5 client failed:', e)
+    console.warn('TVHTML5 client failed:', e)
   }
 
   // Last resort: parse from watch page
@@ -673,7 +673,6 @@ async function downloadToFile(
 ): Promise<void> {
   await fs.promises.mkdir(path.dirname(outPath), { recursive: true })
   const client = url.startsWith('https:') ? https : http
-  console.log('Downloading to file:', url, outPath)
   await new Promise<void>((resolve, reject) => {
     const req = client.get(
       url,
@@ -766,11 +765,9 @@ export async function downloadByUrlOrId(
     quality: 'highest'
   }
 ): Promise<string> {
-  console.log('Downloading by URL or ID:', input, output, pref)
   const videoId = parseVideoId(input)
   const pr = await fetchPlayerResponse(videoId)
   const choice = chooseStreams(pr, pref)
-  console.log('Choice:', choice)
   const baseName = output
     ? output
     : `${choice.title}.${
@@ -781,7 +778,6 @@ export async function downloadByUrlOrId(
           : choice.container
       }`
   const outPath = path.resolve(process.cwd(), baseName)
-  console.log('outPath', outPath)
   if (choice.isAudioOnly) {
     const audioUrl = await ensureDecipheredUrl(choice.audio!)
     if (!audioUrl) throw new Error('No audio url')

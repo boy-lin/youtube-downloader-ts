@@ -57,7 +57,6 @@ async function main() {
       container,
       quality
     })
-    console.log(`Saved: ${out}`)
   } catch (e: any) {
     console.error('Error:', e?.message || e)
     process.exit(2)
